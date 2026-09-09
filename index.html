@@ -123,6 +123,7 @@
   .m-right { text-align:right; }
   .m-visits { font-size:14px; font-weight:700; }
   .m-visits span { font-size:11px; color:var(--muted-2); font-weight:500; }
+  .m-visits.maxed { color:var(--red); }
   .status-dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-left:5px; vertical-align:middle; }
   .st-active { background:var(--green); }
   .st-cancelled { background:var(--red); }
@@ -150,6 +151,20 @@
   .mini { border:1px solid var(--border); border-radius:12px; padding:14px; text-align:center; }
   .mini .mv { font-size:22px; font-weight:800; letter-spacing:-.4px; }
   .mini .ml { font-size:11.5px; color:var(--muted); margin-top:2px; }
+
+  .usage-box { display:flex; align-items:center; gap:16px; padding:16px 18px; border-radius:12px; border:1px solid var(--border); margin-bottom:20px; }
+  .usage-box.maxed { border-color:var(--red); background:#FDF2F1; }
+  .usage-num { font-size:30px; font-weight:800; letter-spacing:-.5px; line-height:1; white-space:nowrap; }
+  .usage-num small { font-size:16px; color:var(--muted-2); font-weight:700; }
+  .usage-box.maxed .usage-num { color:var(--red); }
+  .usage-mid { flex:1; }
+  .usage-meter { display:flex; gap:6px; margin-bottom:7px; }
+  .pip { flex:1; height:12px; border-radius:4px; background:#EAEDEC; }
+  .pip.on { background:var(--petrol); }
+  .pip.max { background:var(--red); }
+  .usage-cap { font-size:12.5px; color:var(--muted); }
+  .usage-cap b { color:var(--ink); font-weight:700; }
+  .usage-box.maxed .usage-cap b { color:var(--red); }
 
   .sec-title { font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); margin:0 0 12px; }
 
@@ -270,20 +285,20 @@ const SAMPLE = {
   ],
   locations: [ {name:"Riverside",cars:1760},{name:"Fontana",cars:1420},{name:"Ontario",cars:1000} ],
   members: [
-    {id:"PG-1042",name:"Marcus Alvarez",make:"Toyota",model:"RAV4",yr:2021,color:"Silver",plate:"8XYZ441",plan:"Deluxe Unlimited",price:29.99,join:"Mar 2024",status:"Active",site:"Riverside",mtd:14,life:312},
-    {id:"PG-1088",name:"Priya Nair",make:"Honda",model:"Civic",yr:2022,color:"Blue",plate:"9KLM223",plan:"Premium Unlimited",price:39.99,join:"Nov 2023",status:"Active",site:"Fontana",mtd:19,life:486},
-    {id:"PG-1120",name:"Derek Chan",make:"Ford",model:"F-150",yr:2019,color:"Black",plate:"7RTP908",plan:"Basic Unlimited",price:19.99,join:"Jan 2025",status:"Active",site:"Ontario",mtd:8,life:96},
-    {id:"PG-1156",name:"Sofia Ramirez",make:"Tesla",model:"Model 3",yr:2023,color:"White",plate:"ELEC552",plan:"Premium Unlimited",price:39.99,join:"Jul 2024",status:"Active",site:"Riverside",mtd:21,life:254},
-    {id:"PG-1173",name:"James Okafor",make:"Chevrolet",model:"Malibu",yr:2020,color:"Gray",plate:"4GHT119",plan:"Deluxe Unlimited",price:29.99,join:"Sep 2024",status:"Active",site:"Fontana",mtd:9,life:178},
-    {id:"PG-1201",name:"Emily Zhang",make:"Subaru",model:"Outback",yr:2022,color:"Green",plate:"3PLK760",plan:"Deluxe Unlimited",price:29.99,join:"Jun 2023",status:"Active",site:"Ontario",mtd:12,life:402},
-    {id:"PG-1230",name:"Carlos Mendez",make:"Nissan",model:"Altima",yr:2018,color:"Red",plate:"6WQE332",plan:"Basic Unlimited",price:19.99,join:"Apr 2025",status:"Active",site:"Riverside",mtd:6,life:41},
-    {id:"PG-1255",name:"Hannah Kim",make:"Hyundai",model:"Tucson",yr:2021,color:"Blue",plate:"2ASD447",plan:"Premium Unlimited",price:39.99,join:"Feb 2024",status:"Active",site:"Fontana",mtd:17,life:366},
-    {id:"PG-1288",name:"Robert Lee",make:"BMW",model:"330i",yr:2020,color:"Black",plate:"1BMW300",plan:"Deluxe Unlimited",price:29.99,join:"Dec 2023",status:"Active",site:"Ontario",mtd:10,life:288},
-    {id:"PG-1310",name:"Aisha Patel",make:"Kia",model:"Sportage",yr:2023,color:"Silver",plate:"5KIA118",plan:"Basic Unlimited",price:19.99,join:"May 2025",status:"Active",site:"Riverside",mtd:9,life:33},
-    {id:"PG-1342",name:"Tomás Herrera",make:"Jeep",model:"Wrangler",yr:2019,color:"Orange",plate:"JEEP4X4",plan:"Premium Unlimited",price:39.99,join:"Aug 2024",status:"Cancelled",site:"Fontana",mtd:1,life:145},
-    {id:"PG-1377",name:"Grace Wong",make:"Mazda",model:"CX-5",yr:2022,color:"Gray",plate:"8MZD991",plan:"Deluxe Unlimited",price:29.99,join:"Nov 2024",status:"Active",site:"Ontario",mtd:13,life:210},
-    {id:"PG-1401",name:"David Nguyen",make:"Volkswagen",model:"Jetta",yr:2021,color:"White",plate:"7VWJ556",plan:"Basic Unlimited",price:19.99,join:"Feb 2025",status:"Active",site:"Riverside",mtd:7,life:88},
-    {id:"PG-1435",name:"Olivia Brooks",make:"Audi",model:"Q5",yr:2023,color:"Blue",plate:"AUDIQ50",plan:"Premium Unlimited",price:39.99,join:"May 2024",status:"Active",site:"Fontana",mtd:20,life:298}
+    {id:"PG-1042",name:"Marcus Alvarez",make:"Toyota",model:"RAV4",yr:2021,color:"Silver",plate:"8XYZ441",plan:"Deluxe Unlimited",price:29.99,join:"Mar 2024",status:"Active",site:"Riverside",mtd:5,life:312},
+    {id:"PG-1088",name:"Priya Nair",make:"Honda",model:"Civic",yr:2022,color:"Blue",plate:"9KLM223",plan:"Premium Unlimited",price:39.99,join:"Nov 2023",status:"Active",site:"Fontana",mtd:4,life:486},
+    {id:"PG-1120",name:"Derek Chan",make:"Ford",model:"F-150",yr:2019,color:"Black",plate:"7RTP908",plan:"Basic Unlimited",price:19.99,join:"Jan 2025",status:"Active",site:"Ontario",mtd:2,life:96},
+    {id:"PG-1156",name:"Sofia Ramirez",make:"Tesla",model:"Model 3",yr:2023,color:"White",plate:"ELEC552",plan:"Premium Unlimited",price:39.99,join:"Jul 2024",status:"Active",site:"Riverside",mtd:5,life:254},
+    {id:"PG-1173",name:"James Okafor",make:"Chevrolet",model:"Malibu",yr:2020,color:"Gray",plate:"4GHT119",plan:"Deluxe Unlimited",price:29.99,join:"Sep 2024",status:"Active",site:"Fontana",mtd:3,life:178},
+    {id:"PG-1201",name:"Emily Zhang",make:"Subaru",model:"Outback",yr:2022,color:"Green",plate:"3PLK760",plan:"Deluxe Unlimited",price:29.99,join:"Jun 2023",status:"Active",site:"Ontario",mtd:4,life:402},
+    {id:"PG-1230",name:"Carlos Mendez",make:"Nissan",model:"Altima",yr:2018,color:"Red",plate:"6WQE332",plan:"Basic Unlimited",price:19.99,join:"Apr 2025",status:"Active",site:"Riverside",mtd:1,life:41},
+    {id:"PG-1255",name:"Hannah Kim",make:"Hyundai",model:"Tucson",yr:2021,color:"Blue",plate:"2ASD447",plan:"Premium Unlimited",price:39.99,join:"Feb 2024",status:"Active",site:"Fontana",mtd:5,life:366},
+    {id:"PG-1288",name:"Robert Lee",make:"BMW",model:"330i",yr:2020,color:"Black",plate:"1BMW300",plan:"Deluxe Unlimited",price:29.99,join:"Dec 2023",status:"Active",site:"Ontario",mtd:3,life:288},
+    {id:"PG-1310",name:"Aisha Patel",make:"Kia",model:"Sportage",yr:2023,color:"Silver",plate:"5KIA118",plan:"Basic Unlimited",price:19.99,join:"May 2025",status:"Active",site:"Riverside",mtd:2,life:33},
+    {id:"PG-1342",name:"Tomás Herrera",make:"Jeep",model:"Wrangler",yr:2019,color:"Orange",plate:"JEEP4X4",plan:"Premium Unlimited",price:39.99,join:"Aug 2024",status:"Cancelled",site:"Fontana",mtd:0,life:145},
+    {id:"PG-1377",name:"Grace Wong",make:"Mazda",model:"CX-5",yr:2022,color:"Gray",plate:"8MZD991",plan:"Deluxe Unlimited",price:29.99,join:"Nov 2024",status:"Active",site:"Ontario",mtd:4,life:210},
+    {id:"PG-1401",name:"David Nguyen",make:"Volkswagen",model:"Jetta",yr:2021,color:"White",plate:"7VWJ556",plan:"Basic Unlimited",price:19.99,join:"Feb 2025",status:"Active",site:"Riverside",mtd:2,life:88},
+    {id:"PG-1435",name:"Olivia Brooks",make:"Audi",model:"Q5",yr:2023,color:"Blue",plate:"AUDIQ50",plan:"Premium Unlimited",price:39.99,join:"May 2024",status:"Active",site:"Fontana",mtd:5,life:298}
   ]
 };
 
@@ -298,6 +313,7 @@ const CLR = {
 };
 const PAL = ["#0E7C7B","#4FAF7C","#E7A93C","#3D6FE0","#7A6FF0","#D9564F","#0A4F4E","#7FB8B4","#B0B4BB"];
 const colorFor = (map,name,i) => map[name] || PAL[i % PAL.length];
+const MAX_USES = 5;   // subscription wash cap per cycle
 
 const $ = (s,r=document) => r.querySelector(s);
 const money = n => "$" + Math.round(n).toLocaleString("en-US");
@@ -546,11 +562,12 @@ function renderMemberList(){
   if(!list.find(m=>m.id===memberState.selected)) memberState.selected=list[0].id;
   el.innerHTML=list.map(m=>{
     const st=/active/i.test(m.status)?"st-active":"st-cancelled";
+    const used=m.mtd||0, uses=Math.min(used,MAX_USES), maxed=used>=MAX_USES;
     return `<div class="m-item ${m.id===memberState.selected?'sel':''}" data-id="${m.id}">
       <div class="avatar" style="background:${avatarColor(m.id)}">${initials(m.name)}</div>
       <div><div class="m-name">${m.name}<span class="status-dot ${st}"></span></div>
         <div class="m-meta">${m.plate} · ${String(m.plan||"").replace(" Unlimited","")} · ${m.site}</div></div>
-      <div class="m-right"><div class="m-visits">${m.mtd}<span> / mo</span></div></div></div>`;
+      <div class="m-right"><div class="m-visits ${maxed?'maxed':''}">${uses}<span>/${MAX_USES}</span></div></div></div>`;
   }).join("");
   el.querySelectorAll(".m-item").forEach(it=>it.addEventListener("click",()=>{memberState.selected=it.dataset.id;el.querySelectorAll(".m-item").forEach(x=>x.classList.toggle("sel",x.dataset.id===memberState.selected));renderMemberDetail();}));
 }
@@ -558,6 +575,11 @@ function renderMemberDetail(){
   const m=D.members.find(x=>x.id===memberState.selected), el=$("#mDetail");
   if(!m){ el.innerHTML=`<div class="detail-body"><div class="empty">Select a member.</div></div>`; return; }
   const perWeek=(m.mtd/3).toFixed(1), util=Math.min(100,Math.round(m.mtd/21*100));
+  const used=m.mtd||0, uses=Math.min(used,MAX_USES), remaining=Math.max(0,MAX_USES-used), maxed=used>=MAX_USES, over=Math.max(0,used-MAX_USES);
+  const pips=Array.from({length:MAX_USES},(_,i)=>`<span class="pip ${i<uses?(maxed?'max':'on'):''}"></span>`).join("");
+  const usageCap = maxed
+    ? `<b>Limit reached</b>${over>0?` · ${over} wash${over===1?'':'es'} over the ${MAX_USES}-wash cap`:` · 0 remaining this cycle`}`
+    : `<b>${remaining}</b> of ${MAX_USES} wash${remaining===1?'':'es'} remaining this cycle`;
   const timeline = m.visits && m.visits.length ? m.visits.map(v=>`
     <div class="tl-item"><div class="tl-node"></div>
       <div><div class="tl-when">${fmtVisit(v)}</div><div class="tl-what">${v.wash} · ${v.site||m.site}</div></div></div>`).join("")
@@ -573,13 +595,18 @@ function renderMemberDetail(){
         <svg class="car-ico" viewBox="0 0 24 24"><path d="M3 13l1.5-4.5A2 2 0 016.4 7h11.2a2 2 0 011.9 1.5L21 13v5a1 1 0 01-1 1h-1a1 1 0 01-1-1v-1H6v1a1 1 0 01-1 1H4a1 1 0 01-1-1v-5z"/><circle cx="7" cy="16" r="1.3"/><circle cx="17" cy="16" r="1.3"/></svg>
         <div><div class="vt">${m.yr} ${m.make} ${m.model}</div><div class="vs">${m.color} · registered vehicle on file</div></div>
       </div>
+      <p class="sec-title">Subscription usage</p>
+      <div class="usage-box ${maxed?'maxed':''}">
+        <div class="usage-num">${uses}<small>/${MAX_USES}</small></div>
+        <div class="usage-mid"><div class="usage-meter">${pips}</div><div class="usage-cap">${usageCap}</div></div>
+      </div>
       <p class="sec-title">Vehicle identification</p>
       <div class="id-grid">
         <div class="id-cell"><div class="k"><svg class="id-ico" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>License plate</div><div class="v">${m.plate}</div></div>
         <div class="id-cell"><div class="k"><svg class="id-ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5 20a7 7 0 0114 0"/></svg>Member ID</div><div class="v">${m.id}</div></div>
       </div>
       <div class="mini-stats">
-        <div class="mini"><div class="mv">${m.mtd}</div><div class="ml">washes this period</div></div>
+        <div class="mini"><div class="mv">${remaining}</div><div class="ml">washes remaining</div></div>
         <div class="mini"><div class="mv">${num(m.life)}</div><div class="ml">lifetime washes</div></div>
         <div class="mini"><div class="mv">${perWeek}</div><div class="ml">avg / week</div></div>
         <div class="mini"><div class="mv">${util}%</div><div class="ml">days-active rate</div></div>
