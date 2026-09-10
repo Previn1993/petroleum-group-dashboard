@@ -85,15 +85,6 @@
   .summary-line { font-size:13px; color:var(--muted); line-height:1.65; }
   .summary-line b { color:var(--ink); font-weight:700; }
 
-  .hr-row { display:grid; grid-template-columns:56px 1fr 118px; align-items:center; gap:12px; margin-bottom:10px; }
-  .hr-label { font-size:13.5px; color:var(--ink); font-weight:500; }
-  .hr-label.peak { font-weight:800; }
-  .hr-fill { height:19px; border-radius:4px; background:var(--petrol-soft); min-width:3px; transition:width .5s; }
-  .hr-fill.peak { background:var(--petrol); }
-  .hr-value { font-size:13px; text-align:right; white-space:nowrap; }
-  .hr-value b { font-weight:700; }
-  .peak-tag { color:var(--muted-2); font-size:12px; }
-
   .wt-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; margin-top:15px; }
   .wt-row:first-child { margin-top:0; }
   .wt-label { font-size:14.5px; color:var(--ink); }
@@ -227,13 +218,11 @@
 
   <div class="tabs" id="tabs">
     <button class="tab active" data-tab="overview">Overview<span class="tab-sub">at a glance</span></button>
-    <button class="tab" data-tab="sales">Sales<span class="tab-sub">revenue &amp; mix</span></button>
     <button class="tab" data-tab="members">Members<span class="tab-sub">activity &amp; vehicles</span></button>
     <button class="tab" data-tab="trends">Trends<span class="tab-sub">daily &amp; monthly</span></button>
   </div>
 
   <section class="view active" id="overview"></section>
-  <section class="view" id="sales"></section>
   <section class="view" id="members"></section>
   <section class="view" id="trends"></section>
 
@@ -254,7 +243,7 @@ const SAMPLE = {
          netMembers:36, memberWashes:2760, retailWashes:1420, revDelta:8.4, avgPerDay:199, prevMembers:604 },
   paymentModes: [
     {name:"DRB",rev:41800,cars:2050},{name:"Tap to Pay",rev:14700,cars:780},
-    {name:"Prepaid",rev:12900,cars:640},{name:"Everwash",rev:4980,cars:380},
+    {name:"Prepaid",rev:12900,cars:640},
     {name:"Way.com",rev:2140,cars:110},{name:"Cash",rev:2000,cars:120},{name:"Card",rev:1100,cars:100}
   ],
   hourly: [
@@ -306,7 +295,7 @@ const SAMPLE = {
    2) COLORS + HELPERS
    ============================================================ */
 const CLR = {
-  payment: {DRB:"var(--petrol)","Tap to Pay":"var(--green)",Prepaid:"var(--amber)",Everwash:"var(--red)","Way.com":"var(--blue)",Cash:"var(--purple)",Card:"#B0B4BB"},
+  payment: {DRB:"var(--petrol)","Tap to Pay":"var(--green)",Prepaid:"var(--amber)","Way.com":"var(--blue)",Cash:"var(--purple)",Card:"#B0B4BB"},
   wash: {"Deluxe wash":"var(--petrol)","Premium wash":"var(--petrol-dark)","Basic wash":"#7FB8B4","Single Wash":"var(--amber)"},
   plan: {"Deluxe Unlimited":"var(--petrol)","Premium Unlimited":"var(--petrol-dark)","Basic Unlimited":"#7FB8B4"},
   loc:  {Riverside:"var(--petrol)",Fontana:"var(--green)",Ontario:"var(--amber)"}
@@ -495,43 +484,6 @@ function renderOverview(){
     </div>`;
 }
 
-function renderSales(){
-  const total=D.kpi.revenue;
-  const onsite=D.paymentModes.filter(p=>["Tap to Pay","Cash","Card"].includes(p.name)).reduce((a,b)=>a+b.rev,0);
-  const peak=D.hourly.reduce((a,b)=>b.rev>a.rev?b:a,D.hourly[0]||{h:"—",rev:0,n:0});
-  const maxPM=Math.max(...D.paymentModes.map(p=>p.rev),1);
-  $("#sales").innerHTML = `
-    <div class="row row-3">
-      <div class="card"><p class="card-label">Total amount — all modes</p><p class="card-value sm">${money(total)}</p><p class="stat-sub">${num(D.kpi.carCount)} cars</p></div>
-      <div class="card"><p class="card-label">Collected on-site</p><p class="card-value sm">${money(onsite)}</p></div>
-      <div class="card"><p class="card-label">Peak hour</p><p class="card-value sm">${peak.h}</p><p class="stat-sub">${money(peak.rev)} · ${num(peak.n)} cars</p></div>
-    </div>
-    <div class="panel">
-      <div class="panel-head"><div><p class="panel-title">Revenue by payment mode</p><p class="panel-sub">Share of ${money(total)} · car count &amp; % shown</p></div></div>
-      ${D.paymentModes.map((p,i)=>`<div class="bar-row">
-        <div class="bar-label"><span class="dot" style="background:${colorFor(CLR.payment,p.name,i)}"></span>${p.name}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:${(p.rev/maxPM*100).toFixed(1)}%;background:${colorFor(CLR.payment,p.name,i)}"></div></div>
-        <div class="bar-value"><b>${money(p.rev)}</b> · ${num(p.cars)} · ${(p.rev/total*100).toFixed(1)}%</div></div>`).join("")}
-      <hr class="divider">
-      <p class="summary-line">On-site tap/cash/card is <b>${(onsite/total*100).toFixed(1)}%</b> of amount; the rest flows through DRB, prepaid packages and partner channels.</p>
-    </div>
-    <div class="two-col">
-      <div class="panel" style="margin-bottom:0;">
-        <div class="panel-head"><div><p class="panel-title" style="font-size:17px;">Amount by hour</p><p class="panel-sub">Aggregate · car count in value</p></div></div>
-        ${(()=>{const mx=Math.max(...D.hourly.map(h=>h.rev),1);return D.hourly.map(h=>{const pk=h.rev===mx;
-          return `<div class="hr-row"><div class="hr-label ${pk?'peak':''}">${h.h}</div><div class="hr-track"><div class="hr-fill ${pk?'peak':''}" style="width:${(h.rev/mx*100).toFixed(1)}%"></div></div><div class="hr-value"><b>${money(h.rev)}</b> · ${num(h.n)}${pk?' <span class="peak-tag">← peak</span>':''}</div></div>`;}).join("");})()}
-      </div>
-      <div class="panel" style="margin-bottom:0;">
-        <div class="panel-head"><div><p class="panel-title" style="font-size:17px;">Wash type division</p><p class="panel-sub">Car count · ${num(D.kpi.carCount)} washes</p></div></div>
-        ${(()=>{const mx=Math.max(...D.washTypes.map(w=>w.cars),1);return D.washTypes.map((w,i)=>`
-          <div class="wt-row"><div class="wt-label">${w.name}</div><div class="wt-value"><b>${num(w.cars)}</b> · ${(w.cars/D.kpi.carCount*100).toFixed(1)}%</div></div>
-          <div class="wt-track"><div class="wt-fill" style="width:${(w.cars/mx*100).toFixed(1)}%;background:${colorFor(CLR.wash,w.name,i)}"></div></div>`).join("");})()}
-        <hr class="divider">
-        <p class="summary-line">Unlimited plans account for <b>${(D.kpi.memberWashes/D.kpi.carCount*100).toFixed(0)}%</b> of throughput — the recurring base between retail spikes.</p>
-      </div>
-    </div>`;
-}
-
 let memberState = {filter:"All",query:"",selected:null};
 function filteredMembers(){
   const q=memberState.query.trim().toLowerCase();
@@ -671,7 +623,7 @@ function renderTrends(){
    6) BOOT / TABS / UPLOAD
    ============================================================ */
 let D, rendered={};
-const RENDERERS={overview:renderOverview,sales:renderSales,members:renderMembersShell,trends:renderTrends};
+const RENDERERS={overview:renderOverview,members:renderMembersShell,trends:renderTrends};
 
 function boot(data,statusText,statusClass){
   D=data;
